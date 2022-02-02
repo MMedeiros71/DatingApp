@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -59,7 +60,7 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AppUser>> Login(LoginDto loginDto)
+        public async Task<ActionResult<userDto>> Login(LoginDto loginDto)
         {
             var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == loginDto.Username);
 
@@ -73,8 +74,12 @@ namespace API.Controllers
             {
                 if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password");
             }
-            
-            return user;
+
+            return new userDto
+            {
+                Username = user.Username,
+                Token = TokenService.GenerateToken(user)
+            };
         }
 
         private async Task<bool> UserExists(string username)
