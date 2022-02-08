@@ -11,15 +11,17 @@ namespace API.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly SymmetricSecurityKey _key;
+        private readonly IConfiguration _config;
         public TokenService(IConfiguration configuration)
         {
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]));
+            _config = configuration;
         }
         public string GenerateToken(AppUser user)
         {
            
             var tokenHandler = new JwtSecurityTokenHandler();
+            
+            var key = Encoding.ASCII.GetBytes(_config.GetConnectionString("TokenKey"));
             
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -27,8 +29,11 @@ namespace API.Services
                 {
                     new Claim(ClaimTypes.Name, user.Username)
                 }),
+                
                 Expires = DateTime.UtcNow.AddMinutes(20),
-                SigningCredentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature)
+                
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha512Signature)
             };
             
             var token = tokenHandler.CreateToken(tokenDescriptor);
