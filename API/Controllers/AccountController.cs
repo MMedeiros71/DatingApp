@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +15,16 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
 
-        public AccountController(DataContext context)
+        private readonly ITokenService _token;
+
+        public AccountController(DataContext context, ITokenService tokenService)
         {
             _context = context;
+            _token = tokenService;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AppUser>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<userDto>> Register(RegisterDto registerDto)
         {
             if (await UserExists(registerDto.Username)) return BadRequest(("Username is taken"));
             
@@ -36,11 +40,15 @@ namespace API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return new userDto
+            {
+                Username = user.Username,
+                Token = _token.GenerateToken(user)
+            };
         }
         
         [HttpPost("registerquery")]
-        public async Task<ActionResult<AppUser>> RegisterQuery([FromQuery] RegisterDto registerDto)
+        public async Task<ActionResult<userDto>> RegisterQuery([FromQuery] RegisterDto registerDto)
         {
             if (await UserExists(registerDto.Username)) return BadRequest(("Username is taken"));
             
@@ -56,7 +64,11 @@ namespace API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return new userDto
+            {
+                Username = user.Username,
+                Token = _token.GenerateToken(user)
+            };
         }
 
         [HttpPost("login")]
@@ -78,7 +90,7 @@ namespace API.Controllers
             return new userDto
             {
                 Username = user.Username,
-                Token = TokenService.GenerateToken(user)
+                Token = _token.GenerateToken(user)
             };
         }
 
