@@ -22,7 +22,7 @@ namespace API.Data
 
         public virtual DbSet<AppUser> Users { get; set; }
         public virtual DbSet<CsnivSenha> CsnivSenha { get; set; }
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -53,7 +53,7 @@ namespace API.Data
             {
                 entity.ToTable("AppUser");
             });
-
+            
             OnModelCreatingPartial(modelBuilder);
         }
 
