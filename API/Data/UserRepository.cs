@@ -66,5 +66,10 @@ namespace API.Data
                 .SingleOrDefaultAsync();
 
         }
+
+        public async Task<int> MembersCount()
+        {
+            return await _context.Users.CountAsync();
+        }
     }
 }

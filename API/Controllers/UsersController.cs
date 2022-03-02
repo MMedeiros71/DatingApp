@@ -43,6 +43,12 @@ namespace API.Controllers
             return await _userRepository.GetMemberAsync(username);
         }
 
+        [HttpGet("memberscount")]
+        public async Task<ActionResult<int>> MembersCount()
+        {
+            return await _userRepository.MembersCount();
+        }
+
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
         {
