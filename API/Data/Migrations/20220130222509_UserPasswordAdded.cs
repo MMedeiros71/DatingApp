@@ -7,6 +7,7 @@ namespace API.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            
             migrationBuilder.AddColumn<byte[]>(
                 name: "PasswordHash",
                 table: "AppUser",

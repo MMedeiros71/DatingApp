@@ -7,6 +7,7 @@ namespace API.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            
             migrationBuilder.RenameColumn(
                 name: "UserName",
                 table: "AppUser",
@@ -64,7 +65,7 @@ namespace API.Data.Migrations
                 name: "LookingFor",
                 table: "AppUser",
                 nullable: true);
-
+                
             migrationBuilder.CreateTable(
                 name: "Photos",
                 columns: table => new

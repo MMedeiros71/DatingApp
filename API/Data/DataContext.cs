@@ -22,7 +22,8 @@ namespace API.Data
 
         public virtual DbSet<AppUser> Users { get; set; }
         public virtual DbSet<CsnivSenha> CsnivSenha { get; set; }
-        
+        public virtual DbSet<UserLike> Likes { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -53,7 +54,22 @@ namespace API.Data
             {
                 entity.ToTable("AppUser");
             });
+
+            modelBuilder.Entity<UserLike>()
+                .HasKey(k => new {k.SourceUserId, k.LikedUserId});
+
+            modelBuilder.Entity<UserLike>()
+                .HasOne(s => s.SourceUser)
+                .WithMany(l => l.LikedUsers)
+                .HasForeignKey(s => s.SourceUserId)
+                .OnDelete(DeleteBehavior.NoAction);
             
+            modelBuilder.Entity<UserLike>()
+                .HasOne(s => s.LikedUser)
+                .WithMany(l => l.LikedByUsers)
+                .HasForeignKey(s => s.LikedUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+          
             OnModelCreatingPartial(modelBuilder);
         }
 

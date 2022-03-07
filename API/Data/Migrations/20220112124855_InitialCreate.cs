@@ -7,6 +7,7 @@ namespace API.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            
             migrationBuilder.CreateTable(
                 name: "AppUser",
                 columns: table => new
@@ -19,6 +20,7 @@ namespace API.Data.Migrations
                 {
                     table.PrimaryKey("PK_AppUser", x => x.Id);
                 });
+                
 /*
             migrationBuilder.CreateTable(
                 name: "CSNIV_Senha",
